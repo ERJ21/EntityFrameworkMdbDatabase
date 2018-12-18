@@ -14,7 +14,10 @@ namespace EntityTest
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool? ScreenIsAutomatic { get; set; }
+        public int OperatorType { get; set; }
+        public bool? OperatorIsActive { get; set; }
 
+        public OperatorTypes OperatorTypeNavigation { get; set; }
         public ICollection<ProjectsOperators> ProjectsOperators { get; set; }
     }
 }

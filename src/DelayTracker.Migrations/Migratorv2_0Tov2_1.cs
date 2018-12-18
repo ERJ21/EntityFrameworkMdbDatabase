@@ -17,14 +17,14 @@ namespace DelayTracker.Migrations
 
             v2_1Context.Projects.AddRange(
                 v2_0Context.Projects
-                .Select(p => new v2_1.Projects
+                .Select(v2_0project => new v2_1.Projects
                 {
-                    ProjectNumber = p.ProjectNumber,
-                    ProjectName = p.ProjectName,
-                    Location = p.Location,
-                    ProjectDescription = p.ProjectDescription,
-                    ProjectIsActive = p.ProjectIsActive,
-                    Vessel = p.Vessel
+                    ProjectNumber = v2_0project.ProjectNumber,
+                    ProjectName = v2_0project.ProjectName,
+                    Location = v2_0project.Location,
+                    ProjectDescription = v2_0project.ProjectDescription,
+                    ProjectIsActive = v2_0project.ProjectIsActive,
+                    Vessel = v2_0project.Vessel
                 }));
         }
     }

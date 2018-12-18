@@ -126,20 +126,22 @@
   <ItemGroup>
     <Compile Include="AsCodes.cs" />
     <Compile Include="AsPipeTypes.cs" />
-    <Compile Include="Captains.cs" />
     <Compile Include="Categories.cs" />
-    <Compile Include="Chiefs.cs" />
     <Compile Include="CutterDelays.cs" />
     <Compile Include="Cutters.cs" />
     <Compile Include="CutterSubcategories.cs" />
     <Compile Include="CutterTasks.cs" />
     <Compile Include="CutterWorks.cs" />
     <Compile Include="DateLookup.cs" />
+    <Compile Include="DefaultSubcategories.cs" />
     <Compile Include="Delays.cs" />
     <Compile Include="EventTypes.cs" />
     <Compile Include="HopperCycles.cs" />
     <Compile Include="HopperStates.cs" />
     <Compile Include="Instance.cs" />
+    <Compile Include="LightLocations.cs" />
+    <Compile Include="LightLogEntries.cs" />
+    <Compile Include="LightLogEntryTypes.cs" />
     <Compile Include="Loads.cs" />
     <Compile Include="LocalizedDelays.cs" />
     <Compile Include="LocalizedRamTasks.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="ModelContext.cs" />
     <Compile Include="Notes.cs" />
     <Compile Include="Operators.cs" />
+    <Compile Include="OperatorTypes.cs" />
     <Compile Include="PipelineConfigurations.cs" />
     <Compile Include="PipelineDelays.cs" />
     <Compile Include="PipelineTasks.cs" />
@@ -157,8 +160,6 @@
     <Compile Include="Pipes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projects.cs" />
-    <Compile Include="ProjectsCaptains.cs" />
-    <Compile Include="ProjectsChiefs.cs" />
     <Compile Include="ProjectsOperators.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RamTasks.cs" />
@@ -166,15 +167,15 @@
     <Compile Include="SlowBellLoggedStates.cs" />
     <Compile Include="StatesLog.cs" />
     <Compile Include="Subcategories.cs" />
-    <Compile Include="Subjobs.cs" />
+    <Compile Include="SubcategoriesUsaceCodes.cs" />
     <Compile Include="Tasks.cs" />
     <Compile Include="Teeth.cs" />
+    <Compile Include="UsaceCodes.cs" />
     <Compile Include="Vessels.cs" />
     <Compile Include="VesselTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

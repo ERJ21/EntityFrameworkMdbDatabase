@@ -8,5 +8,6 @@ namespace DelayTracker.Migrations
         {
             throw new NotImplementedException();
         }
+        
     }
 }

@@ -13,10 +13,6 @@ namespace DelayTracker.v2_0
             modelBuilder.Entity<Projects>(entity =>
             {
                 entity.HasKey(e => e.ProjectId);
-
-                //entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
-
-                //entity.Property(e => e.ProjectDescription).IsRequired(false);
             });
         }
     }

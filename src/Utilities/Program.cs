@@ -14,7 +14,8 @@ namespace Utilities
     {
         static void Main(string[] args)
         {
-
+            //SerializeDbInfoJson(@"C:\Users\Admin\Desktop\DelayTrackerDBs\Vessels", @"C:\Users\Admin\Desktop\test.json");
+            DelayTrackerDbFileInfo[] array = JsonConvert.DeserializeObject<DelayTrackerDbFileInfo[]>(File.ReadAllText(@"C:\Users\Admin\Desktop\test.json"));
         }
 
         private static void SerializeDbInfoJson(string rootDirectory, string outputPath)

@@ -9,20 +9,22 @@ namespace EntityTest
     {
         public virtual DbSet<AsCodes> AsCodes { get; set; }
         public virtual DbSet<AsPipeTypes> AsPipeTypes { get; set; }
-        public virtual DbSet<Captains> Captains { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
-        public virtual DbSet<Chiefs> Chiefs { get; set; }
         public virtual DbSet<CutterDelays> CutterDelays { get; set; }
         public virtual DbSet<Cutters> Cutters { get; set; }
         public virtual DbSet<CutterSubcategories> CutterSubcategories { get; set; }
         public virtual DbSet<CutterTasks> CutterTasks { get; set; }
         public virtual DbSet<CutterWorks> CutterWorks { get; set; }
         public virtual DbSet<DateLookup> DateLookup { get; set; }
+        public virtual DbSet<DefaultSubcategories> DefaultSubcategories { get; set; }
         public virtual DbSet<Delays> Delays { get; set; }
         public virtual DbSet<EventTypes> EventTypes { get; set; }
         public virtual DbSet<HopperCycles> HopperCycles { get; set; }
         public virtual DbSet<HopperStates> HopperStates { get; set; }
         public virtual DbSet<Instance> Instance { get; set; }
+        public virtual DbSet<LightLocations> LightLocations { get; set; }
+        public virtual DbSet<LightLogEntries> LightLogEntries { get; set; }
+        public virtual DbSet<LightLogEntryTypes> LightLogEntryTypes { get; set; }
         public virtual DbSet<Loads> Loads { get; set; }
         public virtual DbSet<LocalizedDelays> LocalizedDelays { get; set; }
         public virtual DbSet<LocalizedRamTasks> LocalizedRamTasks { get; set; }
@@ -31,6 +33,7 @@ namespace EntityTest
         public virtual DbSet<Locations> Locations { get; set; }
         public virtual DbSet<Notes> Notes { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
+        public virtual DbSet<OperatorTypes> OperatorTypes { get; set; }
         public virtual DbSet<PipelineConfigurations> PipelineConfigurations { get; set; }
         public virtual DbSet<PipelineDelays> PipelineDelays { get; set; }
         public virtual DbSet<PipelineTasks> PipelineTasks { get; set; }
@@ -38,17 +41,16 @@ namespace EntityTest
         public virtual DbSet<PipelineWorkTypes> PipelineWorkTypes { get; set; }
         public virtual DbSet<Pipes> Pipes { get; set; }
         public virtual DbSet<Projects> Projects { get; set; }
-        public virtual DbSet<ProjectsCaptains> ProjectsCaptains { get; set; }
-        public virtual DbSet<ProjectsChiefs> ProjectsChiefs { get; set; }
         public virtual DbSet<ProjectsOperators> ProjectsOperators { get; set; }
         public virtual DbSet<RamTasks> RamTasks { get; set; }
         public virtual DbSet<RegularHopperDelays> RegularHopperDelays { get; set; }
         public virtual DbSet<SlowBellLoggedStates> SlowBellLoggedStates { get; set; }
         public virtual DbSet<StatesLog> StatesLog { get; set; }
         public virtual DbSet<Subcategories> Subcategories { get; set; }
-        public virtual DbSet<Subjobs> Subjobs { get; set; }
+        public virtual DbSet<SubcategoriesUsaceCodes> SubcategoriesUsaceCodes { get; set; }
         public virtual DbSet<Tasks> Tasks { get; set; }
         public virtual DbSet<Teeth> Teeth { get; set; }
+        public virtual DbSet<UsaceCodes> UsaceCodes { get; set; }
         public virtual DbSet<Vessels> Vessels { get; set; }
         public virtual DbSet<VesselTypes> VesselTypes { get; set; }
 
@@ -62,7 +64,7 @@ namespace EntityTest
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseJet(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Vit\MainDevelopment\DelayTracker\Branches\Version2.1\Database\DelaysDB.mdb;");
+                optionsBuilder.UseJet(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Vit\MainDevelopment\DelayTracker\Branches\Version2.0\Database\DelaysDB.mdb;");
             }
         }
 
@@ -97,17 +99,6 @@ namespace EntityTest
                 entity.Property(e => e.AsPipeName).HasMaxLength(255);
             });
 
-            modelBuilder.Entity<Captains>(entity =>
-            {
-                entity.HasKey(e => e.CaptainId);
-
-                entity.Property(e => e.CaptainId).HasColumnName("CaptainID");
-
-                entity.Property(e => e.FirstName).HasMaxLength(255);
-
-                entity.Property(e => e.LastName).HasMaxLength(255);
-            });
-
             modelBuilder.Entity<Categories>(entity =>
             {
                 entity.HasKey(e => e.CategoryId);
@@ -119,22 +110,15 @@ namespace EntityTest
 
                 entity.Property(e => e.CategoryName).HasMaxLength(255);
 
+                entity.Property(e => e.IsActive)
+                    .HasColumnType("bit")
+                    .HasDefaultValueSql("0");
+
                 entity.HasOne(d => d.VesselTypeNavigation)
                     .WithMany(p => p.Categories)
                     .HasForeignKey(d => d.VesselType)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("VesselTypesCategories");
-            });
-
-            modelBuilder.Entity<Chiefs>(entity =>
-            {
-                entity.HasKey(e => e.ChiefId);
-
-                entity.Property(e => e.ChiefId).HasColumnName("ChiefID");
-
-                entity.Property(e => e.FirstName).HasMaxLength(255);
-
-                entity.Property(e => e.LastName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<CutterDelays>(entity =>
@@ -170,6 +154,10 @@ namespace EntityTest
                 entity.Property(e => e.CutterId).HasColumnName("CutterID");
 
                 entity.Property(e => e.CutterName).HasMaxLength(255);
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnType("bit")
+                    .HasDefaultValueSql("0");
             });
 
             modelBuilder.Entity<CutterSubcategories>(entity =>
@@ -243,6 +231,24 @@ namespace EntityTest
                 entity.HasKey(e => e.MyDate);
             });
 
+            modelBuilder.Entity<DefaultSubcategories>(entity =>
+            {
+                entity.HasKey(e => e.DefaultSubcategoryId);
+
+                entity.HasIndex(e => e.DefaultSubcategoryId)
+                    .HasName("SubcategoriesDefaultSubcategories")
+                    .IsUnique();
+
+                entity.Property(e => e.DefaultSubcategoryId)
+                    .HasColumnName("DefaultSubcategoryID")
+                    .ValueGeneratedNever();
+
+                entity.HasOne(d => d.DefaultSubcategory)
+                    .WithOne(p => p.DefaultSubcategories)
+                    .HasForeignKey<DefaultSubcategories>(d => d.DefaultSubcategoryId)
+                    .HasConstraintName("SubcategoriesDefaultSubcategories");
+            });
+
             modelBuilder.Entity<Delays>(entity =>
             {
                 entity.HasKey(e => e.DelayId);
@@ -305,6 +311,12 @@ namespace EntityTest
 
                 entity.Property(e => e.HopperCycleId).HasColumnName("HopperCycleID");
 
+                entity.Property(e => e.PipeLength).HasDefaultValueSql("0");
+
+                entity.Property(e => e.Tonnage).HasDefaultValueSql("0");
+
+                entity.Property(e => e.Volume).HasDefaultValueSql("0");
+
                 entity.HasOne(d => d.ProjectOperatorNavigation)
                     .WithMany(p => p.HopperCycles)
                     .HasForeignKey(d => d.ProjectOperator)
@@ -323,9 +335,76 @@ namespace EntityTest
 
             modelBuilder.Entity<Instance>(entity =>
             {
-                entity.Property(e => e.InstanceId)
-                    .HasColumnName("InstanceID")
-                    .ValueGeneratedNever();
+                entity.HasKey(e => e.ChangeDate);
+
+                entity.Property(e => e.Dtversion)
+                    .HasColumnName("DTVersion")
+                    .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<LightLocations>(entity =>
+            {
+                entity.HasKey(e => e.LightLocationId);
+
+                entity.HasIndex(e => e.Project)
+                    .HasName("ProjectsLightLocations");
+
+                entity.Property(e => e.LightLocationId).HasColumnName("LightLocationID");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.LocationName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.ProjectNavigation)
+                    .WithMany(p => p.LightLocations)
+                    .HasForeignKey(d => d.Project)
+                    .HasConstraintName("ProjectsLightLocations");
+            });
+
+            modelBuilder.Entity<LightLogEntries>(entity =>
+            {
+                entity.HasKey(e => e.LightLogEntryId);
+
+                entity.HasIndex(e => e.EntryType)
+                    .HasName("LightLogEntryTypesLightLogEntries");
+
+                entity.HasIndex(e => e.Location)
+                    .HasName("LightLocationsLightLogEntries");
+
+                entity.Property(e => e.LightLogEntryId).HasColumnName("LightLogEntryID");
+
+                entity.Property(e => e.Note)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.EntryTypeNavigation)
+                    .WithMany(p => p.LightLogEntries)
+                    .HasForeignKey(d => d.EntryType)
+                    .HasConstraintName("LightLogEntryTypesLightLogEntries");
+
+                entity.HasOne(d => d.LocationNavigation)
+                    .WithMany(p => p.LightLogEntries)
+                    .HasForeignKey(d => d.Location)
+                    .HasConstraintName("LightLocationsLightLogEntries");
+            });
+
+            modelBuilder.Entity<LightLogEntryTypes>(entity =>
+            {
+                entity.HasKey(e => e.LightLogEntryTypeId);
+
+                entity.Property(e => e.LightLogEntryTypeId).HasColumnName("LightLogEntryTypeID");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.EntryTypeName)
+                    .IsRequired()
+                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<Loads>(entity =>
@@ -451,7 +530,11 @@ namespace EntityTest
 
                 entity.Property(e => e.NoteId).HasColumnName("NoteID");
 
+                entity.Property(e => e.Fuel).HasDefaultValueSql("0");
+
                 entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
+
+                entity.Property(e => e.Water).HasDefaultValueSql("0");
 
                 entity.HasOne(d => d.Project)
                     .WithMany(p => p.Notes)
@@ -464,6 +547,9 @@ namespace EntityTest
             {
                 entity.HasKey(e => e.OperatorId);
 
+                entity.HasIndex(e => e.OperatorType)
+                    .HasName("OperatorTypesOperators");
+
                 entity.Property(e => e.OperatorId).HasColumnName("OperatorID");
 
                 entity.Property(e => e.FirstName)
@@ -474,9 +560,27 @@ namespace EntityTest
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.OperatorIsActive)
+                    .HasColumnType("bit")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.ScreenIsAutomatic)
                     .HasColumnType("bit")
                     .HasDefaultValueSql("1");
+
+                entity.HasOne(d => d.OperatorTypeNavigation)
+                    .WithMany(p => p.Operators)
+                    .HasForeignKey(d => d.OperatorType)
+                    .HasConstraintName("OperatorTypesOperators");
+            });
+
+            modelBuilder.Entity<OperatorTypes>(entity =>
+            {
+                entity.HasKey(e => e.OperatorTypeId);
+
+                entity.Property(e => e.OperatorTypeId).HasColumnName("OperatorTypeID");
+
+                entity.Property(e => e.OperatorTypeName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<PipelineConfigurations>(entity =>
@@ -629,66 +733,6 @@ namespace EntityTest
                     .HasConstraintName("VesselsProjects");
             });
 
-            modelBuilder.Entity<ProjectsCaptains>(entity =>
-            {
-                entity.HasKey(e => e.ProjectCaptainId);
-
-                entity.ToTable("Projects_Captains");
-
-                entity.HasIndex(e => e.Captain)
-                    .HasName("CaptainsProjects_Captains");
-
-                entity.HasIndex(e => e.Project)
-                    .HasName("ProjectsProjects_Captains");
-
-                entity.Property(e => e.ProjectCaptainId).HasColumnName("Project_CaptainID");
-
-                entity.Property(e => e.ProjectCaptainIsActive)
-                    .HasColumnName("Project_CaptainIsActive")
-                    .HasColumnType("bit")
-                    .HasDefaultValueSql("0");
-
-                entity.HasOne(d => d.CaptainNavigation)
-                    .WithMany(p => p.ProjectsCaptains)
-                    .HasForeignKey(d => d.Captain)
-                    .HasConstraintName("CaptainsProjects_Captains");
-
-                entity.HasOne(d => d.ProjectNavigation)
-                    .WithMany(p => p.ProjectsCaptains)
-                    .HasForeignKey(d => d.Project)
-                    .HasConstraintName("ProjectsProjects_Captains");
-            });
-
-            modelBuilder.Entity<ProjectsChiefs>(entity =>
-            {
-                entity.HasKey(e => e.ProjectChiefId);
-
-                entity.ToTable("Projects_Chiefs");
-
-                entity.HasIndex(e => e.Chief)
-                    .HasName("ChiefsProjects_Chiefs");
-
-                entity.HasIndex(e => e.Project)
-                    .HasName("ProjectsProjects_Chiefs");
-
-                entity.Property(e => e.ProjectChiefId).HasColumnName("Project_ChiefID");
-
-                entity.Property(e => e.ProjectChiefIsActive)
-                    .HasColumnName("Project_ChiefIsActive")
-                    .HasColumnType("bit")
-                    .HasDefaultValueSql("0");
-
-                entity.HasOne(d => d.ChiefNavigation)
-                    .WithMany(p => p.ProjectsChiefs)
-                    .HasForeignKey(d => d.Chief)
-                    .HasConstraintName("ChiefsProjects_Chiefs");
-
-                entity.HasOne(d => d.ProjectNavigation)
-                    .WithMany(p => p.ProjectsChiefs)
-                    .HasForeignKey(d => d.Project)
-                    .HasConstraintName("ProjectsProjects_Chiefs");
-            });
-
             modelBuilder.Entity<ProjectsOperators>(entity =>
             {
                 entity.HasKey(e => e.ProjectOperatorId);
@@ -826,6 +870,10 @@ namespace EntityTest
 
                 entity.Property(e => e.SubcategoryId).HasColumnName("SubcategoryID");
 
+                entity.Property(e => e.IsActive)
+                    .HasColumnType("bit")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.SubcategoryName)
                     .IsRequired()
                     .HasMaxLength(255);
@@ -843,23 +891,30 @@ namespace EntityTest
                     .HasConstraintName("CategoriesSubcategories");
             });
 
-            modelBuilder.Entity<Subjobs>(entity =>
+            modelBuilder.Entity<SubcategoriesUsaceCodes>(entity =>
             {
-                entity.HasKey(e => e.SubjobId);
+                entity.HasKey(e => e.Subcategory);
 
-                entity.HasIndex(e => e.Code)
-                    .HasName("Code");
+                entity.ToTable("Subcategories_UsaceCodes");
 
-                entity.HasIndex(e => e.Project)
-                    .HasName("ProjectsSubjobs");
+                entity.HasIndex(e => e.Subcategory)
+                    .HasName("Subcategory")
+                    .IsUnique();
 
-                entity.Property(e => e.SubjobId).HasColumnName("SubjobID");
+                entity.HasIndex(e => e.UsaceCode)
+                    .HasName("UsaceCodesSubcategories_UsaceCodes");
 
-                entity.HasOne(d => d.ProjectNavigation)
-                    .WithMany(p => p.Subjobs)
-                    .HasForeignKey(d => d.Project)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("ProjectsSubjobs");
+                entity.Property(e => e.Subcategory).ValueGeneratedNever();
+
+                entity.HasOne(d => d.SubcategoryNavigation)
+                    .WithOne(p => p.SubcategoriesUsaceCodes)
+                    .HasForeignKey<SubcategoriesUsaceCodes>(d => d.Subcategory)
+                    .HasConstraintName("SubcategoriesSubcategories_UsaceCodes");
+
+                entity.HasOne(d => d.UsaceCodeNavigation)
+                    .WithMany(p => p.SubcategoriesUsaceCodes)
+                    .HasForeignKey(d => d.UsaceCode)
+                    .HasConstraintName("UsaceCodesSubcategories_UsaceCodes");
             });
 
             modelBuilder.Entity<Tasks>(entity =>
@@ -900,7 +955,29 @@ namespace EntityTest
 
                 entity.Property(e => e.ToothId).HasColumnName("ToothID");
 
+                entity.Property(e => e.IsActive)
+                    .HasColumnType("bit")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.ToothName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<UsaceCodes>(entity =>
+            {
+                entity.HasKey(e => e.UsaceCodeId);
+
+                entity.HasIndex(e => e.UsaceCodeName)
+                    .HasName("UsaceCodesUsaceCode");
+
+                entity.Property(e => e.UsaceCodeId).HasColumnName("UsaceCodeID");
+
+                entity.Property(e => e.UsaceCodeDescription)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.UsaceCodeName)
+                    .IsRequired()
+                    .HasMaxLength(4);
             });
 
             modelBuilder.Entity<Vessels>(entity =>

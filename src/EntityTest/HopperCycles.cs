@@ -17,6 +17,9 @@ namespace EntityTest
         public DateTime? FinishDate { get; set; }
         public int? ProjectOperator { get; set; }
         public string CycleNote { get; set; }
+        public int? Tonnage { get; set; }
+        public int? Volume { get; set; }
+        public int? PipeLength { get; set; }
 
         public ProjectsOperators ProjectOperatorNavigation { get; set; }
         public ICollection<RamTasks> RamTasks { get; set; }

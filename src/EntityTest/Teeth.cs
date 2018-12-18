@@ -12,6 +12,7 @@ namespace EntityTest
 
         public int ToothId { get; set; }
         public string ToothName { get; set; }
+        public bool? IsActive { get; set; }
 
         public ICollection<CutterWorks> CutterWorks { get; set; }
     }

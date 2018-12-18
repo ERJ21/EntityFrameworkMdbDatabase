@@ -12,6 +12,7 @@ namespace EntityTest
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public bool? IsActive { get; set; }
         public int? VesselType { get; set; }
 
         public VesselTypes VesselTypeNavigation { get; set; }

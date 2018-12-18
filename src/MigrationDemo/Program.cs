@@ -5,12 +5,12 @@ using System;
 
 namespace MigrationDemo
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            string v2_0FilePath = @"C:\Users\JanGo\Desktop\Vessels\Hydraulic\Texas\DatabaseFiles\151215_DelaysDB.mdb";
-            string v2_1FilePath = @"C:\Users\JanGo\Desktop\DelaysDB.2.1.mdb";
+            string v2_0FilePath = @"C:\Users\Admin\Desktop\DelayTrackerDBs\Vessels\Hydraulic\Texas\DatabaseFiles\151215_DelaysDB.mdb";
+            string v2_1FilePath = @"C:\Users\Admin\Desktop\DelaysDB.mdb";
 
             DbContextOptions<DelayTracker.v2_0.ModelContext> v2_0Options =
                 new DbContextOptionsBuilder<DelayTracker.v2_0.ModelContext>()
